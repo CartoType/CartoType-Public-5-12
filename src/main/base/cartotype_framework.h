@@ -1,6 +1,6 @@
 /*
 cartotype_framework.h
-Copyright (C) 2012-2019 CartoType Ltd.
+Copyright (C) 2012-2020 CartoType Ltd.
 See www.cartotype.com for more information.
 */
 
@@ -713,6 +713,8 @@ class CFramework: public MNavigatorObserver
     TNavigationState NavigationState() const;
     void SetNavigatorParam(const TNavigatorParam& aParam);
     TNavigatorParam NavigatorParam() const;
+    void SetLocationMatchParam(const TLocationMatchParam& aParam);
+    TLocationMatchParam LocationMatchParam() const;
     void SetNavigationMinimumFixDistance(int32_t aMeters);
     void SetNavigationTimeOffRouteTolerance(int32_t aSeconds);
     void SetNavigationDistanceOffRouteTolerance(int32_t aMeters);
@@ -725,8 +727,8 @@ class CFramework: public MNavigatorObserver
     double DistanceToDestination();
     double EstimatedTimeToDestination();
     void UseSerializedNavigationData(bool aEnable);
-    TResult FindNearestRoad(TNearestRoadInfo& aInfo,double aX,double aY,TCoordType aCoordType,double aHeadingInDegrees,const TLocationMatchParam& aParam,bool aDisplayPosition);
-    TResult DisplayPositionOnNearestRoad(const TNavigationData& aNavData,TNearestRoadInfo* aInfo = nullptr,double aMaxDistanceInMeters = 100);
+    TResult FindNearestRoad(TNearestRoadInfo& aInfo,double aX,double aY,TCoordType aCoordType,double aHeadingInDegrees,bool aDisplayPosition);
+    TResult DisplayPositionOnNearestRoad(const TNavigationData& aNavData,TNearestRoadInfo* aInfo = nullptr);
     TResult SetVehiclePosOffset(double aXOffset,double aYOffset);
     TResult SetFollowMode(TFollowMode aFollowMode);
     TFollowMode FollowMode() const;
@@ -876,6 +878,7 @@ class CFramework: public MNavigatorObserver
     TNavigatorTurn iContinuationTurn;
     TNavigationState iNavigationState = TNavigationState::None;
     TNavigatorParam iNavigatorParam;
+    TLocationMatchParam iLocationMatchParam;
     std::vector<TRouteProfile> iRouteProfile;
     TPointFP iVehiclePosOffset;
     std::unique_ptr<CTileServer> iTileServer;

@@ -987,12 +987,29 @@ class TNavigatorParam
 class TLocationMatchParam
     {
     public:
-    /** The accuracy of a location fix given as a range error with 95% probability. It is clamped to the range 1 ... 1000 by query functions */
-    double iLocationAccuracyInMeters = 8;
-    /** The accuracy of a heading or course given as an angular error in degrees with 95% probability. */
-    double iHeadingAccuracyInDegrees = 22.5;
-    /** The expected maximum distance of a road from the current location. It is clamped to the range 5...1000 by query functions. */
-    double iMaxRoadDistanceInMeters = 100;
+    /** Converts zeros to default values and clamps other values to legal ranges. */
+    void Normalize();
+    /** Returns a normalized version of this object. */
+    TLocationMatchParam Normalized() const { TLocationMatchParam p = *this; p.Normalize(); return p; }
+
+    /**
+    The accuracy of a location fix given as a range error with 95% probability.
+    It is clamped to the range 1 ... 1000.
+    A value of zero indicates the default value: 8.
+    */
+    double iLocationAccuracyInMeters = 0;
+    /**
+    The accuracy of a heading or course given as an angular error in degrees with 95% probability.
+    It is clamped to the range 1 ... 90.
+    A value of zero indicates the default value: 22.5.
+    */
+    double iHeadingAccuracyInDegrees = 0;
+    /**
+    The expected maximum distance of a road from the current location.
+    It is clamped to the range 5 ... 1000.
+    A value of zero indicates the default value: 100.
+    */
+    double iMaxRoadDistanceInMeters = 0;
     };
 
 /** A point on a route with heading and location match parameters. */
@@ -1026,11 +1043,11 @@ class TRouteCoordSet
     /** Creates a TRouteCoordSet by moving data from another one. */
     TRouteCoordSet(TRouteCoordSet&& aOther) = default;
     /** Creates a TRouteCoordSet from a TCoordSet. */
-    TRouteCoordSet(const TCoordSet& aCs,TCoordType aCoordType);
+    TRouteCoordSet(const TCoordSet& aCs,TCoordType aCoordType,const TLocationMatchParam& aParam);
     /** Creates a TRouteCoordSet from a std::vector of points. */
-    TRouteCoordSet(const std::vector<TPointFP>& aPointArray,TCoordType aCoordType);
+    TRouteCoordSet(const std::vector<TPointFP>& aPointArray,TCoordType aCoordType,const TLocationMatchParam& aParam);
     /** Creates a TRouteCoordSet from an array of points. */
-    TRouteCoordSet(const TPointFP* aPointArray,size_t aCount,TCoordType aCoordType);
+    TRouteCoordSet(const TPointFP* aPointArray,size_t aCount,TCoordType aCoordType,const TLocationMatchParam& aParam);
     /** The assignment operator. */
     TRouteCoordSet& operator=(const TRouteCoordSet& aOther) = default;
     /** The move assignment operator. */
