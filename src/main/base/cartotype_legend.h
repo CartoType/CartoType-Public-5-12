@@ -64,6 +64,7 @@ class CLegend: public MNavigatorObserver
     bool HasTurnInstruction() const;
     void SetTurnInstruction(const MString& aText);
     CString TurnInstruction();
+    uint32_t Serial() const;
 
     private:
     void DrawScale(CGraphicsContext& aGc,const CLegendObjectParam& aParam,int32_t aX,int32_t aY,int32_t aWidth,TColor aNightModeColor);

@@ -253,7 +253,7 @@ private:
     CartoType::CString iPushPinDesc;
     bool iBestRoute = false;                                // calculate the best route through the waypoints don't just take them in order
     std::vector<CartoType::uint32> iMapHandle;
-    bool iLeftClickSimulatesNavigationFix = false;
+    bool iShiftLeftClickSimulatesNavigationFix = true;
 
     std::unique_ptr<CartoType::CMapRenderer> iMapRenderer;
 };

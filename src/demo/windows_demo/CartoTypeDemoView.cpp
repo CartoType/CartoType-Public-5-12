@@ -565,7 +565,7 @@ void CCartoTypeDemoView::OnRButtonUp(UINT nFlags, CPoint point)
 
     // Set the heading to that of the nearest road.
     CartoType::TNearestRoadInfo info;
-    error = iFramework->FindNearestRoad(info,rp.iPoint.iX,rp.iPoint.iY,CartoType::TCoordType::Map,-1,CartoType::TLocationMatchParam(),false);
+    error = iFramework->FindNearestRoad(info,rp.iPoint.iX,rp.iPoint.iY,CartoType::TCoordType::Map,-1,false);
     static const char* compass_points[16] =
         { "n", "nne", "ne", "ene", "e", "ese", "se", "sse", "s", "ssw", "sw", "wsw", "w", "wnw", "nw", "nnw" };
     double d = 0;
@@ -1165,10 +1165,10 @@ void CCartoTypeDemoView::OnLButtonUp(UINT nFlags,CPoint point)
     iMapDragOffset.iX = point.x - iMapDragAnchor.iX;
     iMapDragOffset.iY = point.y - iMapDragAnchor.iY;
 
-    if (iLeftClickSimulatesNavigationFix)
+    // Supply a simulated navigation fix if the left mouse button is pressed with the shift key down.	
+    if (iShiftLeftClickSimulatesNavigationFix)
         {
-        // Supply a simulated navigation fix.	
-        if (iMapDragOffset.iX == 0 && iMapDragOffset.iY == 0)
+        if (iMapDragOffset.iX == 0 && iMapDragOffset.iY == 0 && (nFlags & MK_SHIFT))
             {
             CartoType::TNavigationData nav;
             nav.iValidity = CartoType::TNavigationData::KPositionValid | CartoType::TNavigationData::KTimeValid;
@@ -1178,6 +1178,24 @@ void CCartoTypeDemoView::OnLButtonUp(UINT nFlags,CPoint point)
             nav.iTime = iOnRouteTime;
             iFramework->ConvertPoint(nav.iPosition.iX,nav.iPosition.iY,CartoType::TCoordType::Display,CartoType::TCoordType::Degree);
             iFramework->Navigate(nav);
+
+            CartoType::CString state = "navigation state: ";
+            switch (iFramework->NavigationState())
+                {
+                case CartoType::TNavigationState::None: state += "None (no route has been created, or navigation is disabled)"; break;
+                case CartoType::TNavigationState::NoPosition: state += "NoPosition (there is a route, and navigation is enabled, but no position has been supplied)"; break;
+                case CartoType::TNavigationState::Turn: state += "Turn (the position is on the route and turn information is available)"; break;
+                case CartoType::TNavigationState::OffRoute: state += "OffRoute (the position is off the route)"; break;
+                case CartoType::TNavigationState::ReRouteNeeded: state += "ReRouteNeeded (a new route needs to be calculated)"; break;
+                case CartoType::TNavigationState::ReRouteDone: state += "ReRouteDone (a new route has been calculated after a period off route)"; break;
+                case CartoType::TNavigationState::TurnRound: state += "TurnRound (the position is on the route but a U-turn is needed)"; break;
+                case CartoType::TNavigationState::Arrival: state += "Arrival (the position is on the route and very close to the destination)"; break;
+                }
+
+            CCartoTypeDemoApp* app = (CCartoTypeDemoApp*)AfxGetApp();
+            CMainFrame* main_window = (CMainFrame*)app->m_pMainWnd;
+            state.Append((CartoType::uint16)0);
+            main_window->SetMessageText((LPCTSTR)state.Text());
             }
         }
 

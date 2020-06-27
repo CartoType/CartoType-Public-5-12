@@ -22,6 +22,7 @@ class CMapObject;
 class TMapTransform;
 class CProjection;
 class TBitmap;
+class TAttribSet;
 
 /** A group of map objects with the same name returned by a search function. */
 class CMapObjectGroup
@@ -86,8 +87,14 @@ class CMapObject: public MPath
     /** Returns a writable interface to the contour indexed by aIndex. */
     virtual MWritableContour& WritableContour(size_t aIndex) = 0;
 
-    /** Returns a pointer to writable string attributes if possible; used by makemap when compressing strings. */
+    /** Returns a pointer to writable string attributes if possible; used by makemap. */
     virtual MString* WritableStringAttributes() { return nullptr; }
+
+    /** Returns a pointer to a TAttribSet if possible; used by makemap. */
+    virtual TAttribSet* AttribSet() { return nullptr; }
+
+    /** Returns a constant pointer to a TAttribSet if possible; used by makemap. */
+    const TAttribSet* AttribSet() const { return const_cast<CMapObject*>(this)->AttribSet(); }
 
     /**
     If the object contains array data that can be represented as
